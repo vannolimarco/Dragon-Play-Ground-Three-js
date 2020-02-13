@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html>
+		<link rel="stylesheet" href="./css/bootstrap.min.css">
+	<head>
+		
+		<title>Vannoli and Chiaradia - Theme Park</title>
+		
+		<!-- principal style css for console of project -->
+	
+		<style>
+			body, html 		{	margin: 0;
+								padding: 0;
+								width: 100%; 
+								height: 100vh;
+								overflow: hidden;
+							}
+			h2,h1,h3           {         	
+								text-transform: uppercase;
+								background: linear-gradient(to right,rgba(245, 46, 46, 0.748) 10%, orange 100%);
+								-webkit-background-clip: text;
+								-webkit-text-fill-color: transparent;					
+	                 		}
+			h4,h5,h6,span { 
+				                color: black
+							}
+
+			#lunaParkCanvas { 	background-color: yellow;
+								width: 100%; 
+								height: 100%;
+								z-index: 2; 
+								position: absolute; 
+								top: 0px; 
+								left: 0px;
+							}
+			
+			#MainDiv 		{ 	margin: 0px auto;
+								background-color: blue;
+								width: 100%;
+								height: 100vh;
+							}
+
+			#leftColumn		{ 	background-color: white;
+								width: 80%;
+								height: 100vh;
+								float: left;
+							}
+								
+			#rightColumn	{	background-color: grey;
+								width: 20%;
+								z-index: 1; 
+								position: absolute; 
+								top: 0px; 
+								right: 0px;
+								height: 100vh;
+								float: right;
+								padding: 20px 20px;
+								z-index:100;
+								min-width: 200px;
+							}
+			#alert 			{	display: block;
+								position: absolute;
+								top: 0%;
+								left: 30%;
+								width: 20%; 
+								height: 20%;
+							}
+			#btn_info 		{	display: block;
+								position: absolute;
+								top: 1%;
+								left: 1%;
+								width: 4%; 
+								height: 7%;
+			}
+			#info 			{	display: block;
+								position: absolute;
+								top: 2%;
+								left: 4.8%;
+								width: 25%; 
+								height: 20%;
+			}
+
+			.btn-circle.btn-xl {
+								width: 100%;
+								height: 100%;
+								padding: 5px 16px;
+								font-size: 20px;
+								line-height: 1.33;
+								border-radius: 70px;
+			}
+			#navigation_first_person_info {
+			                	display: block;
+								position: absolute;
+								top: 0%;
+								left: 5%;
+								width:75%; 
+								height: 1%;
+								text-align: center;
+			}
+
+
+		</style>
+		
+		<!-- TreeJS Framework -->
+	
+		<script src="./frameworks/three.module.js"></script>
+		<script src="./frameworks/three.min.js"></script>
+		<script src="./frameworks/three.js"></script>
+		<script src="./frameworks/internetCode.js"></script>
+
+ 
+		<script>
+			/*--- SET THE PARAMETERS AND OBJECTS HERE ---*/
+			var sizeParkX = 120;
+			var sizeParkZ = 70;
+			var sizeGate = 50;
+		</script>
+
+	</head>
+	<body>
+		<div id="mainDiv">
+			<div id="leftColumn" >
+				<button  title="Info of Project (Vannoli Chiaradia)" type="button" id="btn_info" class="btn btn-info btn-circle btn-xl" data-toggle="modal" data-target="#exampleModalLong">
+							?
+				</button>
+				<!-- Info commands to move on first person  -->
+				<div id="navigation_first_person_info" class="visible">
+				<div class="card-header">
+						<span  style="color: black;" id="navigation_first_person_info_text">&nbsp; Arrow keys to move forward (&#x2191;), back(&#x2193;), left(&#x2190;) and right(&#x2192;). A,S,D and W keys to orientate to the left, right, down and up</span>
+				  </div>
+				</div>
+				
+				<!-- Info alert -->
+				<div class="invisible" id="info" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+						<h5 class="modal-title" id="info_project">Info of Project</h5>
+						<button id="btn_close_info1" type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
+						<div class="modal-body">
+							Immerse yourself in a theme park experience moving among the attractions and change your vision through the console.<br>
+							<br>
+							The <b>Dragon Park</b> offers the following attractions: <br>
+							<b>
+								- Frozen Ferris Wheel, </br>
+								- Volcano Eruption, </br>
+								- escape from Atlantis, </br>
+								- Space Tower </br>
+								- Duck Lake <br>
+							</b>
+							<br>
+							The <b>Dragon Playground Project</b> was created by <b>Daniele Chiaradia</b> and <b>Vannoli Marco</b>. </br>
+						</div>
+						<div class="modal-footer">
+						<button type="button" id="btn_close_info2"  class="btn btn-secondary" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+					</div>
+				</div>
+                    <!-- Start alert to focus scene -->
+					<div class="visible" id="alert">
+						<div class="modal-dialog modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLongTitle"> The PlayGround Project</h5>
+								</div>
+								<div class="modal-body">
+									Click Play to get focus on the view and continue the experience with the First Person modality!
+								</div>
+								<div class="modal-footer">
+									<button id="btn_here_first_person" type="button" class="btn btn-success" data-dismiss="modal" >Play!</button>
+								</div>
+							</div>
+						</div>
+					</div>
+			<!-- THE CANVAS OF TREEJS IS HERE! -->
+			</div>
+			<div id="rightColumn"  >
+				<h3 >Console Dragon playground</h3>
+				<h5>Position</h5>
+				<input type="range" min="-100" max="100" value="0.0" class="slider" id="slider_camera_translaction_x">  <span>X</span> &rarr; <span id="span_camera_translaction_x"></span>
+				<br>
+				<input type="range" min="1" max="100" value="9.0" class="slider" id="slider_camera_translaction_y">  <span>Y</span> &rarr; <span id="span_camera_translaction_y"></span>
+				<br>
+				<input type="range" min="-200" max="200" value="200.0" class="slider" id="slider_camera_translaction_z">  <span>Z</span> &rarr;<span id="span_camera_translaction_z"></span>
+				<br>
+				<h5>Orientation Camera</h5>
+				<input type="range" min="-0.8" max="0.8" value="0.0" step="0.01" class="slider" id="slider_camera_rotation_x">  <span>X</span> &rarr; <span id="span_camera_rotation_x"></span>
+				<br>
+				<input type="range" min="-100" max="100" value="0.0" step="0.01" class="slider" id="slider_camera_rotation_y">  <span>Y</span> &rarr; <span id="span_camera_rotation_y"></span>
+				<br>
+				<button  id="btn_day" class="btn btn-dark">Change to Night</button>
+				<br>
+				<h4 >Select your vision:</h4>
+				<div class="custom-control custom-radio">
+					<input type="radio" value="0" id="firstPerson" onclick="changeTypeOfView(this.value,this.id)" name="view" class="custom-control-input" checked>
+					<label class="custom-control-label" for="firstPerson">First Person</label>
+				</div>
+				<div class="custom-control custom-radio">
+						<input type="radio" value="1" id="Panoramic" onclick="changeTypeOfView(this.value,this.id)"  name="view" class="custom-control-input">
+						<label class="custom-control-label" for="Panoramic">Panoramic</label>
+				</div>
+				<div class="custom-control custom-radio">
+						<input type="radio" value="2" id="FrozenFerrisWheel" onclick="changeTypeOfView(this.value,this.id)"  name="view" class="custom-control-input">
+						<label class="custom-control-label" for="FrozenFerrisWheel">Frozen Ferris Wheel</label>
+				</div>
+				<div class="custom-control custom-radio">
+						<input type="radio" value="3" id="VolcanoEruption" onclick="changeTypeOfView(this.value,this.id)"  name="view" class="custom-control-input">
+						<label class="custom-control-label" for="VolcanoEruption">Volcano Eruption</label>
+				</div>
+				<div class="custom-control custom-radio">
+						<input type="radio" value="4" id="SpaceTower" onclick="changeTypeOfView(this.value,this.id)"  name="view" class="custom-control-input">
+						<label class="custom-control-label" for="SpaceTower"> Space Tower</label>
+				</div>
+				<div class="custom-control custom-radio">
+							<input type="radio" value="5" id="EscapefromAtlantis" onclick="changeTypeOfView(this.value,this.id)"  name="view" class="custom-control-input">
+							<label class="custom-control-label" for="EscapefromAtlantis">Escape from Atlantis</label>
+				</div>
+				<div class="custom-control custom-radio">
+							<input type="radio" value="6" id="DuckLake" onclick="changeTypeOfView(this.value,this.id)"  name="view" class="custom-control-input">
+							<label class="custom-control-label" for="DuckLake">Duck Lake</label>
+				</div>
+
+			</div>
+		</div>
+		
+		<!-- Scene, Camera and light -->
+		<script src="./sceneCameraAndLight/scene.js"></script>
+		<script src="./sceneCameraAndLight/camera.js"></script>
+		<script src="./sceneCameraAndLight/light.js"></script>
+		
+		<!-- Texture -->
+		<script src="./textures/textures_base64.js"></script>
+						
+		<!-- Environment -->
+		<script src="./models/foreground.js"></script>
+		<script src="./models/ticketOffice.js"></script>
+		<script src="./models/wellcome_billboard.js"></script>
+		<script src="./models/ferrisWheel.js"></script>
+		<script src="./models/escape_from_atlantis.js"></script>
+		<script src="./models/lake.js"></script>
+		<script src="./models/tower.js"></script>
+		<script src="./models/rotatingArms.js"></script>
+		
+
+		<script>
+			//manage alert info and play
+			document.getElementById('btn_info').onclick = function(){
+				document.getElementById('info').className = "visible"
+			};
+			document.getElementById('btn_close_info1').onclick = function(){
+				document.getElementById('info').className = "invisible"
+			};
+			document.getElementById('btn_close_info2').onclick = function(){
+				document.getElementById('info').className = "invisible"
+			};
+			
+			var mainLoop = () => {                 //the fucntion of main loop
+
+				setTimeout(function() {            //function setTimeout to manage the frame rate of project
+
+					manageViewCamera()             //manage the camera view
+
+					animateFerrisWheel();          //manage the animation of Ferriss Wheel
+					
+					animateTower();                //manage the animation of tower
+				
+					animateRotatingArms();         //manage the animation of RotatingArm
+				
+					animateEscape_from_Atlantis(); //manage the animation of Escape from Atlantis
+
+					animateLake();                 //manage the animation of duck on lake
+					
+					requestAnimationFrame(mainLoop);
+					renderer.render(scene, camera);				
+				}, 1000 / 50);						
+			}
+
+			mainLoop()                             //the main loop function 
+		</script>
+	</body>
+</html>

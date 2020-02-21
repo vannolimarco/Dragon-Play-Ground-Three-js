@@ -1,3 +1,5 @@
+![Logo Sapienza](/logo-sapienza-new.jpg)
+
 # Welcome to Vannoli Marco github 
 The repository is dedicated to project about Interact Graphics.The project is based on impelmentation of playground dedicated to Dragon. You can play as a real playground changing points of view of camera. Inside it, you will find the code implemented and report.
 # Report about it
